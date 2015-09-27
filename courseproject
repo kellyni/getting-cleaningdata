@@ -1,0 +1,33 @@
+setwd("/Users/Jing/Desktop/Getting and Cleaning Data")
+unzip("/Users/Jing/Downloads/getdata-projectfiles-UCI HAR Dataset.zip")
+subjectTrain<-read.table("UCI HAR Dataset/train/subject_train.txt")
+XTrain<-read.table("UCI HAR Dataset/train/X_train.txt")
+YTrain<-read.table("UCI HAR Dataset/train/y_train.txt")
+dataTrain<-cbind(subjectTrain, XTrain, YTrain)
+subjectTest<-read.table("UCI HAR Dataset/test/subject_test.txt")
+XTest<-read.table("UCI HAR Dataset/test/X_test.txt")
+YTest<-read.table("UCI HAR Dataset/test/y_test.txt")
+dataTest<-cbind(subjectTest, XTest, YTest)
+totalData<-rbind(dataTest, dataTrain)
+featureData<-read.table("UCI HAR Dataset/features.txt")
+meanData<-grepl("mean()", featureData[, 2], fixed=TRUE)
+stdData<-grepl("std()",featureData[, 2])
+selectData<-meanData+stdData
+selectData1<-as.logical(c(1, selectData, 1))
+result<-totalData[selectData1]
+activityCategory<-read.table("UCI HAR Dataset/activity_labels.txt")
+colnames(result)[68] <- "list"
+colnames(activityCategory)[1] <- "list"
+colnames(activityCategory)[2] <- "activity label"
+haha<-merge(result, activityCategory, all.x=T)
+selectData3<-featureData[selectData, ]
+haha2<-haha[-1]
+selectData4<-selectData3[, 2]
+selectData5<-as.character(selectData4)
+colnames(haha2)[2:67] <- selectData5
+colnames(haha2)[1] <- "subject"
+haha3<-aggregate(haha2, haha2[, c("subject", "activity label")], mean)
+haha3<-haha3[-3]
+haha3<-haha3[-70]
+haha3<-haha3[-69]
+write.table(haha3, file="dataset.txt", col.names=FALSE)
