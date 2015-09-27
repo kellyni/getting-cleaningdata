@@ -30,4 +30,4 @@ haha3<-aggregate(haha2, haha2[, c("subject", "activity label")], mean)
 haha3<-haha3[-3]
 haha3<-haha3[-70]
 haha3<-haha3[-69]
-write.table(haha3, file="dataset.txt", col.names=FALSE)
+write.table(haha3, file="dataset.txt", row.names=FALSE)
